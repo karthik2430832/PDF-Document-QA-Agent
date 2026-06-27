@@ -431,3 +431,4 @@ FodyWeavers.xsd
 # PDF-Document-QA-Agent
 .pdfqa_cache/
 .venv/
+.streamlit/secrets.toml

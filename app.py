@@ -5,6 +5,7 @@
 Upload a PDF, then chat with it. Answers stream live and cite their pages.
 """
 
+import os
 from pathlib import Path
 
 import streamlit as st
@@ -12,6 +13,17 @@ import streamlit as st
 from pdfqa import Config, PdfQAEngine, pages_label
 
 st.set_page_config(page_title="PDF Document Q&A", page_icon="📄", layout="centered")
+
+# On Streamlit Community Cloud the API key is provided via the Secrets UI
+# (st.secrets). Mirror it into the environment so Config.from_env() — which is
+# framework-agnostic and reads os.environ — works both locally (.env) and in the
+# cloud without any code changes.
+try:
+    for _key in ("GEMINI_API_KEY", "PDFQA_CHAT_MODEL", "PDFQA_EMBED_MODEL"):
+        if _key not in os.environ and _key in st.secrets:
+            os.environ[_key] = str(st.secrets[_key])
+except Exception:  # no secrets.toml present (e.g. local dev) — that's fine
+    pass
 
 EXAMPLES = [
     "📝 Summarize this document",

@@ -94,6 +94,29 @@ via CLI flags, the Streamlit sidebar, or these environment variables:
 - `GEMINI_API_KEY` (required)
 - `PDFQA_CHAT_MODEL`, `PDFQA_EMBED_MODEL` (optional)
 
+## Deploy (Streamlit Community Cloud)
+
+The web UI deploys for free on [share.streamlit.io](https://share.streamlit.io):
+
+1. Push this repo to GitHub (already done).
+2. On Streamlit Community Cloud, **Create app → Deploy from GitHub** and select:
+   - **Repository:** `karthik2430832/PDF-Document-QA-Agent`
+   - **Branch:** `Base_agent`
+   - **Main file path:** `app.py`
+3. Open **Advanced settings → Secrets** and add your key (TOML format):
+
+   ```toml
+   GEMINI_API_KEY = "your-api-key-here"
+   # optional:
+   # PDFQA_CHAT_MODEL = "gemini-2.5-flash"
+   ```
+
+4. Click **Deploy**. `requirements.txt` is installed automatically.
+
+The app reads the key from `st.secrets` in the cloud and from `.env` locally, so
+no code changes are needed between environments. Never commit `.env` or
+`.streamlit/secrets.toml` — both are gitignored.
+
 ## Notes
 
 - Scanned/image-only PDFs have no extractable text and will report an error;
