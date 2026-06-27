@@ -1,0 +1,115 @@
+/* ---- Fonts ---- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+html, body, [class*="css"], [data-testid="stMarkdownContainer"] {
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+}
+
+/* ---- Hide default Streamlit chrome for an app-like feel ---- */
+#MainMenu, footer { visibility: hidden; }
+[data-testid="stToolbar"] { display: none; }
+[data-testid="stHeader"] { background: transparent; }
+[data-testid="stDecoration"] { display: none; }
+.block-container { padding-top: 2.2rem; }
+
+/* ---- Hero header ---- */
+.hero {
+    background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 45%, #db2777 100%);
+    border-radius: 22px;
+    padding: 2.1rem 2.2rem;
+    margin-bottom: 1.4rem;
+    box-shadow: 0 16px 40px rgba(124, 58, 237, 0.35);
+}
+.hero h1 {
+    color: #fff;
+    font-weight: 800;
+    font-size: 2.1rem;
+    margin: 0;
+    letter-spacing: -0.6px;
+}
+.hero p {
+    color: rgba(255, 255, 255, 0.88);
+    margin: 0.45rem 0 0;
+    font-size: 1.02rem;
+    font-weight: 400;
+}
+
+/* ---- Stat cards ---- */
+.stat-card {
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 0.9rem 1rem;
+    text-align: center;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.stat-card:hover { border-color: rgba(139, 92, 246, 0.55); transform: translateY(-2px); }
+.stat-icon { font-size: 1.5rem; line-height: 1; }
+.stat-value {
+    font-size: 1.35rem; font-weight: 700; color: #fff;
+    margin-top: 0.25rem; word-break: break-word;
+}
+.stat-label {
+    font-size: 0.72rem; color: #9aa0b4; margin-top: 0.1rem;
+    text-transform: uppercase; letter-spacing: 0.06em;
+}
+
+/* ---- Empty state ---- */
+.empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    border: 1.5px dashed rgba(139, 92, 246, 0.35);
+    border-radius: 20px;
+    background: rgba(139, 92, 246, 0.04);
+}
+.empty-icon { font-size: 3rem; }
+.empty-title { font-size: 1.25rem; font-weight: 700; color: #e7e9ee; margin-top: 0.6rem; }
+.empty-sub { color: #9aa0b4; margin-top: 0.3rem; }
+
+.hint { color: #9aa0b4; font-size: 0.85rem; margin: 0.4rem 0 0.2rem; font-weight: 500; }
+
+/* ---- Buttons (example chips, sidebar actions) ---- */
+.stButton > button {
+    border-radius: 12px;
+    border: 1px solid rgba(139, 92, 246, 0.35);
+    background: rgba(139, 92, 246, 0.08);
+    color: #d8d9e0;
+    font-weight: 500;
+    font-size: 0.86rem;
+    padding: 0.5rem 0.7rem;
+    transition: all 0.15s ease;
+}
+.stButton > button:hover {
+    border-color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.2);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+/* ---- Chat bubbles ---- */
+[data-testid="stChatMessage"] {
+    border-radius: 16px;
+    padding: 0.35rem 0.6rem;
+    margin-bottom: 0.2rem;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* ---- Sidebar ---- */
+[data-testid="stSidebar"] {
+    background: #12141c;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+[data-testid="stSidebar"] h2 { font-weight: 700; }
+
+/* ---- Source pills ---- */
+.src-pill {
+    display: inline-block;
+    background: rgba(139, 92, 246, 0.16);
+    color: #c4b5fd;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 999px;
+    padding: 0.12rem 0.6rem;
+    font-size: 0.74rem;
+    font-weight: 600;
+    margin-right: 0.3rem;
+}
