@@ -1,4 +1,4 @@
-"""PDF Document Q&A — a small RAG library over Google Gemini.
+"""PDF Document Q&A — a small RAG library over Claude + local embeddings.
 
 Importing this package installs the OS trust store into Python's SSL stack,
 which is needed for HTTPS to work behind corporate TLS-inspecting proxies.

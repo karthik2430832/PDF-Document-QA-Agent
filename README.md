@@ -1,101 +1,119 @@
-# PDF Document Q&A Agent
+# DocuMind AI — Conversational PDF Intelligence Agent 🧠
 
-Ask natural-language questions about any PDF and get answers grounded in the
-document, with page-number citations. Works from the terminal or a small web UI.
+A production-grade conversational agent that lets you chat naturally and ask questions about any PDF document with **live streaming answers** and **exact page citations**.
 
-Built on Google **Gemini** with a lightweight **retrieval-augmented generation
-(RAG)** pipeline, so it stays fast and accurate even on large documents.
+Powered by **Google Gemini** for generation and a high-performance **TF-IDF + Cosine similarity retrieval pipeline** running in pure Python/NumPy (100% portable, zero C++ runtime dependencies).
 
-## Features
+---
 
-- 📄 **Any PDF** — pass a path on the CLI or drag-and-drop in the web UI.
-- 🔎 **RAG retrieval** — the PDF is chunked and embedded; only the most relevant
-  passages are sent to the model, instead of the whole document.
-- 📌 **Page citations** — answers cite the pages they came from (e.g. `(p. 3)`).
-- ⚡ **Streaming answers** — tokens appear as they're generated.
-- 💾 **Embedding cache** — re-asking about the same PDF skips re-embedding.
-- 🧱 **Robust** — automatic retry with backoff when the model is busy.
-- 💬 **Two interfaces** — a terminal REPL and a Streamlit chat app.
+## 🌟 Key Features
 
-## Setup
+- 💬 **Natural Conversational Agent**: Start conversing immediately (say "hi", brainstorm, ask general questions). No mandatory upfront PDF upload.
+- 📎 **Integrated Chat Bar Attachment**: Upload your PDF directly using the native paperclip icon inside the chat bar.
+- 📌 **Verifiable Page Citations**: Every document answer cross-references exact page numbers (e.g. `(p. 3)` or `(pp. 4–5)`), complete with expandable source passage previews.
+- ⚡ **Real-Time Token Streaming**: Watch responses stream dynamically as they are synthesized.
+- 🚀 **100% Native & Portable RAG Pipeline**: Uses `pypdfium2` and NumPy for local indexing and vector search. No PyTorch, no ONNX Runtime, and no Visual C++ Redistributable requirement—works out of the box on Windows (x64/ARM64), macOS, and Linux.
+- 🎨 **Modern Cyber-Glassmorphism UI**: Beautiful dark theme with glowing agent status indicator, curated welcome quotes, quick prompt starters, and clean chat bubbles.
+- 💾 **Smart Disk Caching**: Previously parsed PDFs are hashed and cached under `.pdfqa_cache/` for instant subsequent loads.
+- 🖥️ **Dual Interface**: Includes both a web UI and an interactive terminal REPL.
 
-```bash
-# 1. Install dependencies (a virtualenv is recommended)
+---
+
+## 🚀 Quick Start
+
+### 1. Clone & Set Up Virtual Environment
+
+```powershell
+# Create and activate virtual environment
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1   # On Windows
+# source .venv/bin/activate    # On Linux/macOS
+
+# Install dependencies
 pip install -r requirements.txt
-
-# 2. Add your Gemini API key
-cp .env.example .env        # then edit .env and paste your key
 ```
 
-Get a free key at <https://aistudio.google.com/apikey>.
+### 2. Configure Your API Key
 
-## Usage
+Get a free Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
 
-### Command line
-
-```bash
-python main.py "Karthik Resume GenAI.pdf"     # any PDF path
-python main.py report.pdf --top-k 8           # retrieve more passages
-python main.py report.pdf --model gemini-2.5-pro
+Create a `.env` file in the project root:
+```env
+GEMINI_API_KEY=your-gemini-api-key-here
 ```
+*(Optional: you can also set `PDFQA_CHAT_MODEL=gemini-2.5-flash`)*
 
-Then ask away. The answer renders live as formatted markdown in a panel, with a
-`↳ sources` line. Slash commands: `/help`, `/sources`, `/clear`, `/quit`.
+---
 
-```text
-You › What are the candidate's core skills?
-╭─ AI ─────────────────────────────────────────────╮
-│ The core skills include … (p. 1)                  │
-╰───────────────────────────────────────────────────╯
-↳ sources: p.1, p.2
-```
+## 💻 Running the Application
 
-| Flag | Description |
-|------|-------------|
-| `pdf` | Path to the PDF (defaults to the bundled resume). |
-| `--model` | Chat model (default `gemini-2.5-flash`). |
-| `--embed-model` | Embedding model (default `gemini-embedding-001`). |
-| `--top-k` | Number of passages to retrieve (default 5). |
-| `--no-cache` | Ignore the on-disk embedding cache. |
-| `-v` / `--verbose` | Show indexing/retry progress. |
+### Modern Conversational Web UI (Streamlit)
 
-### Web UI
-
-```bash
+```powershell
 streamlit run app.py
 ```
+Open **`http://localhost:8501`** in your browser.
 
-Upload a PDF in the sidebar, then chat. You can adjust the model and retrieval
-depth, download the conversation, and clear the chat.
+- **Start chatting right away**: Say hello, ask questions, or explore capabilities.
+- **Attach a PDF**: Click the **paperclip** icon in the chat input bar, pick any PDF, and immediately ask questions about it.
+- **Sidebar tools**: Switch Gemini reasoning models, adjust passage retrieval depth, export chat logs, or clear history.
 
-## How it works
+### Terminal REPL
 
-```text
-PDF ──► extract text per page ──► chunk (with overlap, keeping page numbers)
-    ──► embed chunks (Gemini, cached) ──► store vectors in memory
-question ──► embed ──► cosine top-k ──► prompt Gemini with those excerpts
-         ──► streamed, page-cited answer
+```powershell
+python main.py path/to/document.pdf
+python main.py document.pdf --top-k 8 --model gemini-2.5-pro
 ```
 
-| Module | Responsibility |
-|--------|----------------|
-| [pdfqa/extract.py](pdfqa/extract.py) | Page-aware text extraction (PyMuPDF). |
-| [pdfqa/chunking.py](pdfqa/chunking.py) | Overlapping chunks that remember their pages. |
-| [pdfqa/engine.py](pdfqa/engine.py) | Embeddings, retrieval, caching, streaming answers. |
-| [pdfqa/config.py](pdfqa/config.py) | Settings + environment loading. |
-| [main.py](main.py) | Terminal REPL. |
-| [app.py](app.py) | Streamlit web UI. |
+Slash commands available in the terminal:
+- `/help` — Display command guide
+- `/sources` — View citations from the last response
+- `/clear` — Reset conversation memory
+- `/quit` — Exit the agent
 
-## Configuration
+---
 
-Settings live in [pdfqa/config.py](pdfqa/config.py) and can be overridden per run
-via CLI flags, the Streamlit sidebar, or these environment variables:
+## ⚙️ Architecture & Pipeline
 
-- `GEMINI_API_KEY` (required)
-- `PDFQA_CHAT_MODEL`, `PDFQA_EMBED_MODEL` (optional)
+```text
+[PDF Document]
+      │
+      ▼
+Page-Aware Extraction (pypdfium2)
+      │
+      ▼
+Overlapping Chunking (preserving 1-based page numbers)
+      │
+      ▼
+TF-IDF & Cosine Similarity Indexing (NumPy / Scipy-free)
+      │
+      ▼ [On-disk cache: .pdfqa_cache/]
+Query ──► Vectorize ──► Cosine Top-K ──► Grounded Excerpts ──► Google Gemini
+                                                                    │
+                                                                    ▼
+                                                    Live Streamed Cited Answer
+```
 
-## Notes
+| Module | Purpose |
+|---|---|
+| [`app.py`](app.py) | Full-featured conversational agent interface with integrated chat attachment. |
+| [`main.py`](main.py) | Terminal REPL with rich formatted live output. |
+| [`pdfqa/engine.py`](pdfqa/engine.py) | Indexing, cosine retrieval, caching, and Gemini streaming integration. |
+| [`pdfqa/extract.py`](pdfqa/extract.py) | High-fidelity page-aware PDF text extraction via `pypdfium2`. |
+| [`pdfqa/chunking.py`](pdfqa/chunking.py) | Sliding-window text chunker maintaining page coordinate metadata. |
+| [`pdfqa/config.py`](pdfqa/config.py) | Runtime settings, environment variables, and model defaults. |
+| [`assets/style.css`](assets/style.css) | Custom glassmorphism dark theme styling and responsive layout rules. |
 
-- Scanned/image-only PDFs have no extractable text and will report an error;
-  they'd need an OCR step first.
-- Embeddings are cached under `.pdfqa_cache/` (gitignored).
+---
+
+## 🔧 Supported Models
+
+- `gemini-2.5-flash` *(Default — blazing fast, highly capable)*
+- `gemini-2.5-pro` *(Complex reasoning & deep synthesis)*
+- `gemini-2.0-flash`
+
+---
+
+## 🛡️ License
+
+MIT License. Feel free to use, modify, and distribute.
