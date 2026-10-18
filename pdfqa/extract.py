@@ -1,14 +1,15 @@
-"""Page-aware PDF text extraction using PyMuPDF.
+"""Page-aware PDF text extraction using pypdfium2.
 
-PyMuPDF preserves layout/reading order far better than PyPDF2, which matters
-both for answer quality and for keeping accurate page numbers for citations.
+pypdfium2 (Google's PDFium) preserves layout/reading order and ships native
+wheels for Windows ARM64, avoiding the VC++ redistributable dependency that
+pymupdf requires.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-import pymupdf
+import pypdfium2
 
 
 @dataclass
@@ -24,16 +25,18 @@ def extract_pages(pdf_path: str | None = None, *, data: bytes | None = None) -> 
     a Streamlit upload). Returns one ``PageText`` per page, in order.
     """
     if data is not None:
-        doc = pymupdf.open(stream=data, filetype="pdf")
+        doc = pypdfium2.PdfDocument(data)
     elif pdf_path is not None:
-        doc = pymupdf.open(pdf_path)
+        doc = pypdfium2.PdfDocument(pdf_path)
     else:
         raise ValueError("extract_pages requires either pdf_path or data")
 
     try:
-        return [
-            PageText(page=i + 1, text=doc[i].get_text("text") or "")
-            for i in range(doc.page_count)
-        ]
+        pages = []
+        for i in range(len(doc)):
+            textpage = doc[i].get_textpage()
+            text = textpage.get_text_range() or ""
+            pages.append(PageText(page=i + 1, text=text))
+        return pages
     finally:
         doc.close()

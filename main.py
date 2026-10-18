@@ -1,7 +1,7 @@
 """Command-line PDF Q&A with a polished terminal UI.
 
     python main.py path/to/file.pdf
-    python main.py report.pdf --top-k 8 --model gemini-2.5-pro
+    python main.py report.pdf --top-k 8 --model claude-3-5-sonnet-20241022
 
 Ask a question and watch a page-cited answer render live. Slash commands:
   /help  /sources  /clear  /quit
@@ -54,11 +54,11 @@ console = Console(theme=THEME)
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Ask questions about a PDF using Gemini + retrieval (RAG).",
+        description="Ask questions about a PDF using Claude + retrieval (RAG).",
     )
     parser.add_argument("pdf", nargs="?", default=DEFAULT_PDF, help=f"PDF to ask about (default: {DEFAULT_PDF!r}).")
     parser.add_argument("--model", help="Override the chat model.")
-    parser.add_argument("--embed-model", help="Override the embedding model.")
+    parser.add_argument("--embed-model", help="Override the local embedding model.")
     parser.add_argument("--top-k", type=int, help="How many passages to retrieve.")
     parser.add_argument("--no-cache", action="store_true", help="Skip the on-disk embedding cache.")
     parser.add_argument("-v", "--verbose", action="store_true", help="Show progress/retry messages.")
